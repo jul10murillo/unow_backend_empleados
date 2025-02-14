@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\EmployeeRepository;
+use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+
+#[ORM\Entity(repositoryClass: EmployeeRepository::class)]
+#[ApiResource]
+class Employee
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $firstName;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $lastName;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $position;
+
+    #[ORM\Column(type: "date")]
+    private \DateTimeInterface $dateOfBirth;
+
+    // Getters and Setters
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getPosition(): string
+    {
+        return $this->position;
+    }
+
+    public function setPosition(string $position): void
+    {
+        $this->position = $position;
+    }
+
+    public function getDateOfBirth(): \DateTimeInterface
+    {
+        return $this->dateOfBirth;
+    }
+
+    public function setDateOfBirth(\DateTimeInterface $dateOfBirth): void
+    {
+        $this->dateOfBirth = $dateOfBirth;
+    }
+}

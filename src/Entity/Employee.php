@@ -32,6 +32,11 @@ class Employee
     #[Groups("employee")]
     private \DateTimeInterface $dateOfBirth;
 
+    #[ORM\Column(type: "string", length: 255, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    private string $email;
+
     // Getters and Setters
 
     public function getId(): ?int
@@ -77,5 +82,16 @@ class Employee
     public function setDateOfBirth(\DateTimeInterface $dateOfBirth): void
     {
         $this->dateOfBirth = $dateOfBirth;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
     }
 }

@@ -42,6 +42,7 @@ class UpdateEmployeeController
         $employee->setLastName($employeeRequest->lastName);
         $employee->setPosition($employeeRequest->position);
         $employee->setDateOfBirth(new \DateTime($employeeRequest->dateOfBirth));
+        $employee->setEmail($employeeRequest->email);
 
         $this->employeeRepository->save($employee);
 

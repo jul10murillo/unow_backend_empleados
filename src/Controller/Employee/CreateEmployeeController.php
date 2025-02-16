@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\MailService;
 
 #[Route("/api/employees")]
 class CreateEmployeeController
@@ -16,10 +17,11 @@ class CreateEmployeeController
     private EmployeeRepositoryInterface $employeeRepository;
     private ValidatorInterface $validator;
 
-    public function __construct(EmployeeRepositoryInterface $employeeRepository, ValidatorInterface $validator)
+    public function __construct(EmployeeRepositoryInterface $employeeRepository, ValidatorInterface $validator, MailService $mailService)
     {
         $this->employeeRepository = $employeeRepository;
         $this->validator = $validator;
+        $this->mailService = $mailService;
     }
 
     #[Route("/create", methods: ["POST"])]
@@ -38,8 +40,12 @@ class CreateEmployeeController
         $employee->setLastName($employeeRequest->lastName);
         $employee->setPosition($employeeRequest->position);
         $employee->setDateOfBirth(new \DateTime($employeeRequest->dateOfBirth));
+        $employee->setEmail($employeeRequest->email);
+
 
         $this->employeeRepository->save($employee);
+
+        $this->mailService->sendWelcomeEmail($employeeRequest->email, $employeeRequest->firstName . " " . $employeeRequest->lastName);
 
         return new JsonResponse(["message" => "Employee created"], 201);
     }

@@ -5,11 +5,12 @@ namespace App\Controller\Employee;
 use App\Repository\Interfaces\EmployeeRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use App\Resource\EmployeeResource;
 
 
 #[Route("/api/employees")]
-class ListEmployeesController
+class ShowEmployeeController
 {
     private EmployeeRepositoryInterface $employeeRepository;
 
@@ -18,15 +19,14 @@ class ListEmployeesController
         $this->employeeRepository = $employeeRepository;
     }
 
-    #[Route("/list", methods: ["GET"])]
-    public function __invoke(): JsonResponse
+    #[Route("/show/{id}", methods: ["GET"])]
+    public function __invoke(int $id, SerializerInterface $serializer): JsonResponse
     {
-        $employees = $this->employeeRepository->findAllCached();
-        if (empty($employees)) {
-            return new JsonResponse(["data" => []], 200);
+        $employee = $this->employeeRepository->findById($id);
+        if (!$employee) {
+            return new JsonResponse(["error" => "Employee not found"], 404);
         }
 
-
-        return new JsonResponse(["data" => EmployeeResource::collection($employees)], 200);
+        return new JsonResponse(["data" => EmployeeResource::toArray($employee)], 200);
     }
 }

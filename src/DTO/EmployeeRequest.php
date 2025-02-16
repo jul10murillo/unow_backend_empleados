@@ -6,19 +6,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class EmployeeRequest
 {
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ["create"])]
     #[Assert\Length(min: 2, max: 255)]
     public string $firstName;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ["create"])]
     #[Assert\Length(min: 2, max: 255)]
     public string $lastName;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ["create"])]
     #[Assert\Length(min: 2, max: 255)]
     public string $position;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ["create"])]
     #[Assert\Date]
     public string $dateOfBirth;
 

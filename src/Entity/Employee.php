@@ -13,18 +13,23 @@ class Employee
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
+    #[Groups("employee")]
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255)]
+    #[Groups("employee")]
     private string $firstName;
 
     #[ORM\Column(type: "string", length: 255)]
+    #[Groups("employee")]
     private string $lastName;
 
     #[ORM\Column(type: "string", length: 255)]
+    #[Groups("employee")]
     private string $position;
 
     #[ORM\Column(type: "date")]
+    #[Groups("employee")]
     private \DateTimeInterface $dateOfBirth;
 
     // Getters and Setters

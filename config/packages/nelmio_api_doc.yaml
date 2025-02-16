@@ -52,6 +52,7 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Validation error"
+
             /api/employees/list:
                 get:
                     tags:
@@ -80,6 +81,55 @@ nelmio_api_doc:
                                                 position:
                                                     type: string
                                                     example: "Software Engineer"
+
+            /api/employees/show/{id}:
+                get:
+                    tags:
+                        - Employees
+                    summary: "Obtener información de un empleado por ID"
+                    description: "Retorna los detalles de un empleado registrado en la base de datos."
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                          example: 1
+                    responses:
+                        "200":
+                            description: "Empleado encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 1
+                                            firstName:
+                                                type: string
+                                                example: "John"
+                                            lastName:
+                                                type: string
+                                                example: "Doe"
+                                            position:
+                                                type: string
+                                                example: "Software Engineer"
+                                            dateOfBirth:
+                                                type: string
+                                                format: date
+                                                example: "1990-05-15"
+                        "404":
+                            description: "Empleado no encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Employee not found"
+
             /api/employees/update/{id}:
                 put:
                     tags:
@@ -130,6 +180,7 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Invalid data"
+
             /api/employees/delete/{id}:
                 delete:
                     tags:
@@ -156,6 +207,7 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Employee not found"
+
     areas:
         path_patterns:
             - ^/api

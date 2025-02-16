@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-#[Route("/api/employees/create")]
+#[Route("/api/employees")]
 class CreateEmployeeController
 {
     private EmployeeRepositoryInterface $employeeRepository;
@@ -22,7 +22,7 @@ class CreateEmployeeController
         $this->validator = $validator;
     }
 
-    #[Route("/", methods: ["POST"])]
+    #[Route("/create", methods: ["POST"])]
     public function __invoke(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

@@ -8,10 +8,10 @@ class EmployeeResource
     public static function toArray(Employee $employee): array
     {
         return [
-            'id' => $employee->getId(),
             'firstName' => $employee->getFirstName(),
             'lastName' => $employee->getLastName(),
             'position' => $employee->getPosition(),
+            'email' => $employee->getEmail(),
             'dateOfBirth' => $employee->getDateOfBirth()->format('Y-m-d'),
         ];
     }

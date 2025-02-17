@@ -30,8 +30,11 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
     
         $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) {
             $item->expiresAfter(3600);
-            // Obtener empleados de la base de datos y retornarlos correctamente
-            return $this->findAll();
+
+            return $this->createQueryBuilder('e')
+                ->where('e.deletedAt IS NULL') // Filtrar solo los empleados activos
+                ->getQuery()
+                ->getResult();;
         });
 
             // Si la caché ya devuelve un array de objetos Employee, no hacer json_decode()
@@ -42,31 +45,14 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
         return [];
     }
 
-    // Método para reconstruir un objeto Employee si la caché lo guardó como array
-    private function hydrateEmployee(array $data): Employee
-    {
-        $employee = new Employee();
-        $employee->setId($data['id']);
-        $employee->setFirstName($data['firstName']);
-        $employee->setLastName($data['lastName']);
-        $employee->setPosition($data['position']);
-        $employee->setDateOfBirth(new \DateTime($data['dateOfBirth']));
-
-        return $employee;
-    }
-
-    public function searchByName(string $name): array
-    {
-        return $this->createQueryBuilder("e")
-            ->where("e.firstName LIKE :name")   
-            ->setParameter("name", "%$name%")
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findById(int $id): ?Employee
     {
-        return $this->find($id);
+        return $this->createQueryBuilder('e')
+            ->where('e.id = :id')
+            ->andWhere('e.deletedAt IS NULL') // Solo empleados activos
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult(); 
     }
 
     public function save(Employee $employee): void
@@ -80,6 +66,7 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
     public function delete(Employee $employee): void
     {
         $entityManager = $this->getEntityManager();
+        $employee->softDelete();
         $entityManager->persist($employee);
         $entityManager->flush();
         $this->cache->deleteItem('employees_list');

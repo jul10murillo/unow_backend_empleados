@@ -30,23 +30,30 @@ class CreateEmployeeController
         $data = json_decode($request->getContent(), true);
         $employeeRequest = new EmployeeRequest($data);
 
+        // Validación de datos de entrada
         $errors = $this->validator->validate($employeeRequest);
         if (count($errors) > 0) {
             return new JsonResponse(["error" => (string) $errors], 400);
         }
 
-        $employee = new Employee();
-        $employee->setFirstName($employeeRequest->firstName);
-        $employee->setLastName($employeeRequest->lastName);
-        $employee->setPosition($employeeRequest->position);
-        $employee->setDateOfBirth(new \DateTime($employeeRequest->dateOfBirth));
-        $employee->setEmail($employeeRequest->email);
+        try {
+            $employee = new Employee();
+            $employee->setFirstName($employeeRequest->firstName);
+            $employee->setLastName($employeeRequest->lastName);
+            $employee->setPosition($employeeRequest->position);
+            $employee->setDateOfBirth(new \DateTime($employeeRequest->dateOfBirth));
+            $employee->setEmail($employeeRequest->email);
 
+            $this->employeeRepository->save($employee);
 
-        $this->employeeRepository->save($employee);
+            // Enviar correo de bienvenida
+            $this->mailService->sendWelcomeEmail($employeeRequest->email, $employeeRequest->firstName . " " . $employeeRequest->lastName);
 
-        $this->mailService->sendWelcomeEmail($employeeRequest->email, $employeeRequest->firstName . " " . $employeeRequest->lastName);
-
-        return new JsonResponse(["message" => "Employee created"], 201);
+            return new JsonResponse(["message" => "Employee created"], 201);
+        } catch (UniqueConstraintViolationException $e) {
+            return new JsonResponse(["error" => "The email is already registered."], 400);
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => "An unexpected error occurred."], 500);
+        }
     }
 }

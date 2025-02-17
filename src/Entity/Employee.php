@@ -34,8 +34,13 @@ class Employee
 
     #[ORM\Column(type: "string", length: 255, unique: true)]
     #[Assert\NotBlank]
+    #[Groups("employee")]
     #[Assert\Email]
     private string $email;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $deletedAt = null;
+
 
     // Getters and Setters
 
@@ -93,5 +98,20 @@ class Employee
     {
         $this->email = $email;
         return $this;
+    }
+
+    public function softDelete(): void
+    {
+        $this->deletedAt = new \DateTime();
+    }
+
+    public function restore(): void
+    {
+        $this->deletedAt = null;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deletedAt !== null;
     }
 }

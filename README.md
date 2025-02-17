@@ -23,7 +23,7 @@ Este proyecto es una API RESTful desarrollada con Symfony para la gestión de em
 ### Requisitos Previos
 - PHP 8.1+
 - Composer
-- MySQL/PostgreSQL
+- MySQL
 
 ### Pasos de Instalación
 1. **Clonar el repositorio:**
@@ -78,11 +78,6 @@ Todas las rutas protegidas requieren un **Token Bearer**.
   ```sh
   Authorization: Bearer YOUR_TOKEN
   ```
-
-## 🛠️ Ejecución de Pruebas
-Para ejecutar las pruebas unitarias:
-```sh
-php bin/phpunit
 ```
 
 ## 🛠️ Documentación API con Swagger

@@ -1,9 +1,274 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
-            version: 1.0.0
-    areas: # to filter documented areas
+            title: "Prueba Técnica - API de Empleados"
+            description: "API para la gestión de empleados, incluyendo operaciones CRUD con autenticación JWT."
+            version: "1.0.0"
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                name: Authorization
+                in: header
+                description: "Ingrese el token en formato 'Bearer <TOKEN>'"
+        security:
+            - Bearer: []  # Aplica autenticación JWT a todos los endpoints por defecto
+        paths:
+            /api/register:
+                    post:
+                        tags:
+                            - Auth
+                        summary: "Registrar un nuevo usuario"
+                        description: "Crea un nuevo usuario y devuelve un mensaje de éxito."
+                        requestBody:
+                            required: true
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            email:
+                                                type: string
+                                                example: "user@example.com"
+                                            password:
+                                                type: string
+                                                example: "password123"
+                        responses:
+                            "201":
+                                description: "Usuario registrado correctamente"
+                                content:
+                                    application/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                message:
+                                                    type: string
+                                                    example: "User registered successfully"
+                            "400":
+                                description: "Datos inválidos"
+                                content:
+                                    application/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                error:
+                                                    type: string
+                                                    example: "Validation error"
+            /api/employees/create:
+                post:
+                    tags:
+                        - Employees
+                    summary: "Crear un nuevo empleado"
+                    description: "Endpoint para registrar un nuevo empleado."
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        firstName:
+                                            type: string
+                                            example: "John"
+                                        lastName:
+                                            type: string
+                                            example: "Doe"
+                                        position:
+                                            type: string
+                                            example: "Software Engineer"
+                                        dateOfBirth:
+                                            type: string
+                                            format: date
+                                            example: "1990-05-15"
+                    responses:
+                        "201":
+                            description: "Empleado creado exitosamente"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Employee created"
+                        "400":
+                            description: "Datos inválidos"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Validation error"
+
+            /api/employees/list:
+                get:
+                    tags:
+                        - Employees
+                    security:
+                        - BearerAuth: []
+                    summary: "Listar empleados"
+                    description: "Obtiene una lista de todos los empleados registrados."
+                    responses:
+                        "200":
+                            description: "Lista de empleados"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                    example: 1
+                                                firstName:
+                                                    type: string
+                                                    example: "John"
+                                                lastName:
+                                                    type: string
+                                                    example: "Doe"
+                                                position:
+                                                    type: string
+                                                    example: "Software Engineer"
+
+            /api/employees/show/{id}:
+                get:
+                    tags:
+                        - Employees
+                    summary: "Obtener información de un empleado por ID"
+                    description: "Retorna los detalles de un empleado registrado en la base de datos."
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                          example: 1
+                    responses:
+                        "200":
+                            description: "Empleado encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 1
+                                            firstName:
+                                                type: string
+                                                example: "John"
+                                            lastName:
+                                                type: string
+                                                example: "Doe"
+                                            position:
+                                                type: string
+                                                example: "Software Engineer"
+                                            dateOfBirth:
+                                                type: string
+                                                format: date
+                                                example: "1990-05-15"
+                        "404":
+                            description: "Empleado no encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Employee not found"
+
+            /api/employees/update/{id}:
+                put:
+                    tags:
+                        - Employees
+                    summary: "Actualizar información de un empleado"
+                    description: "Modifica los datos de un empleado existente."
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                          example: 1
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        firstName:
+                                            type: string
+                                            example: "John"
+                                        lastName:
+                                            type: string
+                                            example: "Doe"
+                                        position:
+                                            type: string
+                                            example: "Senior Developer"
+                    responses:
+                        "200":
+                            description: "Empleado actualizado exitosamente"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Employee updated"
+                        "400":
+                            description: "Error de validación"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Invalid data"
+                        "404":
+                            description: "Empleado no encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Employee not found"
+
+            /api/employees/delete/{id}:
+                delete:
+                    tags:
+                        - Employees
+                    summary: "Eliminar un empleado"
+                    description: "Elimina un empleado de la base de datos."
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                          example: 1
+                    responses:
+                        "204":
+                            description: "Empleado eliminado correctamente"
+                        "404":
+                            description: "Empleado no encontrado"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Employee not found"
+
+    areas:
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api
+        disable_default_routes: true  
